@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strconv"
 )
 
 func writeToFile(path, text string) error {
@@ -18,22 +19,30 @@ func writeToFile(path, text string) error {
 	}
 	return nil
 }
-func Generate(start int, end int) {
+func Generate(filename string, start int, end int) {
 
 	for i := 0; i+start <= end; i++ {
-		writeToFile("db.txt", fmt.Sprintf("%d\n", start+i))
+		writeToFile(filename, fmt.Sprintf("%d\n", start+i))
 	}
+
 }
 
 func main() {
 	counter := 0
-	for i := 9121000000; i <= 9129999999; i++ {
-		if counter%100 == 0 {
-			log.Printf("Goroutine %v Started!!", counter/100)
-			go Generate(i, i+100)
+	start, err := strconv.Atoi(os.Args[1])
+	if err != nil {
+		log.Fatalf("Error First Paramter should be a number")
+	}
+	end, err := strconv.Atoi(os.Args[2])
+	if err != nil {
+		log.Fatalf("Error Second Parameter should be a number")
+	}
+	for i := 0; i+start <= end; i++ {
+		if counter%10000 == 0 {
+			log.Printf("Goroutine %v Started!!", counter/10000)
+			go Generate(fmt.Sprintf("%d_%d.txt", i+start, i+start+10000), i+start, i+start+10000)
 		}
 		counter += 1
 	}
-	Generate(9121000000, 9129999999)
 
 }
