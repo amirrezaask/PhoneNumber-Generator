@@ -75,7 +75,7 @@ func main() {
 	for i := 0; i+start <= end; i++ {
 		if counter%10000 == 0 {
 			log.Printf("Goroutine %v Started!!", counter/10000)
-			workerPool <- workerData{start: i + start, end: i + end}
+			workerPool <- workerData{start: i + start, end: i + start + 10000}
 		}
 		counter += 1
 	}
