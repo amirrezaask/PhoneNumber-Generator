@@ -30,10 +30,13 @@ func writeToFile(path, text string) error {
 	}
 	return nil
 }
-func Work() {
+func Work(id int) {
+start:
 	w := <-workerPool
+	log.Printf("Worker %d Started Working\n", id)
 	Generate(fmt.Sprintf("./output/%d_%d.txt", w.start, w.end), w.start, w.end)
 	count <- 1 + <-count
+	goto start
 }
 func HeadWorker() {
 	counter := <-exit
@@ -70,7 +73,7 @@ func main() {
 	}
 	go HeadWorker()
 	for i := 0; i < 900; i++ {
-		go Work()
+		go Work(i)
 	}
 	for i := 0; i+start <= end; i++ {
 		if counter%10000 == 0 {
