@@ -7,17 +7,6 @@ import (
 	"strconv"
 )
 
-//var prefix = "/User/amirrezaask/Desktop/phones"
-
-type workerData struct {
-	start int
-	end   int
-}
-
-var workerPool = make(chan workerData, 900)
-var count = make(chan int, 1)
-var exit = make(chan int, 1)
-
 func writeToFile(path, text string) error {
 	f, err := os.OpenFile(path, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0777)
 	if err != nil {
@@ -29,23 +18,6 @@ func writeToFile(path, text string) error {
 		return err
 	}
 	return nil
-}
-func Work(id int) {
-start:
-	w := <-workerPool
-	log.Printf("Worker %d Started Working\n", id)
-	Generate(fmt.Sprintf("./output/%d_%d.txt", w.start, w.end), w.start, w.end)
-	count <- 1 + <-count
-	goto start
-}
-func HeadWorker() {
-	counter := <-exit
-	if counter == 900 {
-		exit <- 1
-		return
-	}
-	count <- counter
-	return
 }
 func Generate(filename string, start int, end int) {
 	for i := 0; i+start <= end; i++ {
